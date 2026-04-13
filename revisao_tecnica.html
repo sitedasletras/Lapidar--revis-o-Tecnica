@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lapidar — Revisão Técnica</title>
+
+<script src="revisao_core.js"></script>
+<script src="revisao_engine.js"></script>
+<script src="revisao_relatorio.js"></script>
+<script src="revisao_memoria.js"></script>
+<script src="revisao_registro.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Georgia, serif;
+background:linear-gradient(135deg,#f7f3ea,#e8dfcf);
+color:#2d2d2d;
+}
+
+header{
+background:#3e2f1c;
+color:white;
+padding:24px;
+text-align:center;
+font-size:28px;
+}
+
+.subtitulo{
+font-size:15px;
+margin-top:6px;
+opacity:0.9;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px 20px;
+}
+
+.card{
+background:white;
+padding:24px;
+border-radius:12px;
+margin-bottom:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+h2{
+margin-top:0;
+color:#3e2f1c;
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+font-family:Georgia, serif;
+font-size:15px;
+}
+
+textarea{
+min-height:260px;
+resize:vertical;
+line-height:1.6;
+}
+
+button{
+background:#3e2f1c;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:6px;
+margin:8px 8px 0 0;
+cursor:pointer;
+}
+
+button:hover{
+background:#5b452b;
+}
+
+.resultado{
+margin-top:20px;
+padding:20px;
+background:#faf7f0;
+border-left:6px solid #3e2f1c;
+border-radius:8px;
+white-space:pre-wrap;
+line-height:1.6;
+min-height:180px;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+font-size:13px;
+opacity:0.75;
+padding-bottom:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+Lapidar — Revisão Técnica
+
+<div class="subtitulo">
+Análise estrutural linguística e estabilidade editorial da obra
+</div>
+
+</header>
+
+
+<div class="container">
+
+
+<div class="card">
+
+<h2>Entrada da obra</h2>
+
+<label>Título</label>
+<input id="tituloObra">
+
+<label>Autor</label>
+<input id="autorObra">
+
+<label>Gênero</label>
+<input id="generoObra">
+
+<label>Texto</label>
+<textarea id="textoObra"></textarea>
+
+<button onclick="carregarObra()">
+Carregar obra
+</button>
+
+<button onclick="executarRevisao()">
+Executar revisão técnica
+</button>
+
+<button onclick="verEstado()">
+Ver estado do núcleo
+</button>
+
+<button onclick="resetarCore()">
+Resetar núcleo
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>Diagnóstico técnico</h2>
+
+<div id="saidaDiagnostico" class="resultado">
+Aguardando análise.
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Memória e registro</h2>
+
+<button onclick="salvarMemoria()">
+Salvar memória
+</button>
+
+<button onclick="carregarMemoria()">
+Carregar memória
+</button>
+
+<button onclick="verMemoria()">
+Ver memória
+</button>
+
+<button onclick="limparMemoria()">
+Limpar memória
+</button>
+
+<br>
+
+<button onclick="verRegistro()">
+Ver registro
+</button>
+
+<button onclick="exportarRegistro()">
+Exportar registro
+</button>
+
+<button onclick="limparRegistro()">
+Limpar registro
+</button>
+
+</div>
+
+
+</div>
+
+
+<footer>
+
+Sistema Lapidar — Revisão Técnica<br>
+Ferramenta estrutural independente do ecossistema Lapidar
+
+</footer>
+
+
+<script>
+
+function carregarObra(){
+
+const pacote = {
+
+titulo:
+document.getElementById("tituloObra").value || "sem_titulo",
+
+autor:
+document.getElementById("autorObra").value || "sem_autor",
+
+genero:
+document.getElementById("generoObra").value || "nao_identificado",
+
+textoBase:
+document.getElementById("textoObra").value
+
+}
+
+const resposta =
+RevisaoCore.carregarObra(pacote)
+
+document.getElementById("saidaDiagnostico").innerText =
+resposta
+
+}
+
+
+function executarRevisao(){
+
+const resposta =
+RevisaoEngine.executarAnalise()
+
+document.getElementById("saidaDiagnostico").innerText =
+JSON.stringify(resposta,null,2)
+
+}
+
+
+function verEstado(){
+
+const estado =
+RevisaoCore.status()
+
+document.getElementById("saidaDiagnostico").innerText =
+JSON.stringify(estado,null,2)
+
+}
+
+
+function resetarCore(){
+
+const resposta =
+RevisaoCore.resetar()
+
+document.getElementById("saidaDiagnostico").innerText =
+resposta
+
+}
+
+
+function salvarMemoria(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoMemoria.salvar()
+
+}
+
+
+function carregarMemoria(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoMemoria.carregar()
+
+}
+
+
+function verMemoria(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoMemoria.ver()
+
+}
+
+
+function limparMemoria(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoMemoria.limpar()
+
+}
+
+
+function verRegistro(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoRegistro.ver()
+
+}
+
+
+function exportarRegistro(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoRegistro.exportar()
+
+}
+
+
+function limparRegistro(){
+
+document.getElementById("saidaDiagnostico").innerText =
+RevisaoRegistro.limpar()
+
+}
+
+</script>
+
+
+</body>
+</html>
