@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Lapidar Revisão Técnica</title>
+
+<script src="revisao_core.js"></script>
+<script src="revisao_relatorio.js"></script>
+<script src="revisao_memoria.js"></script>
+<script src="revisao_registro.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Georgia, serif;
+background:linear-gradient(135deg,#f7f3ea,#e8dfcf);
+color:#2d2d2d;
+}
+
+header{
+background:#3e2f1c;
+color:white;
+padding:22px;
+text-align:center;
+font-size:30px;
+}
+
+.subtitulo{
+font-size:15px;
+margin-top:6px;
+opacity:0.92;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px 20px;
+box-sizing:border-box;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:18px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+h2{
+margin-top:0;
+color:#3e2f1c;
+font-size:20px;
+}
+
+.info{
+line-height:1.7;
+white-space:pre-wrap;
+word-break:break-word;
+}
+
+.botoes{
+margin-top:24px;
+background:white;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+button{
+background:#3e2f1c;
+color:white;
+border:none;
+padding:12px 18px;
+margin:8px 8px 0 0;
+border-radius:6px;
+cursor:pointer;
+font-family:Georgia, serif;
+font-size:15px;
+}
+
+button:hover{
+background:#5b452b;
+}
+
+.output{
+margin-top:24px;
+background:#fff;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+white-space:pre-wrap;
+word-break:break-word;
+line-height:1.6;
+min-height:180px;
+}
+
+.back{
+display:inline-block;
+margin-top:24px;
+color:#3e2f1c;
+cursor:pointer;
+font-weight:bold;
+}
+
+.back:hover{
+text-decoration:underline;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+font-size:13px;
+opacity:0.75;
+padding-bottom:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Dashboard — Lapidar Revisão Técnica
+<div class="subtitulo">
+Painel técnico interno do módulo de análise estrutural linguística
+</div>
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+<h2>Estado do Núcleo</h2>
+<div class="info" id="estadoNucleo">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Identificação da Obra</h2>
+<div class="info" id="estadoObra">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Memória do Módulo</h2>
+<div class="info" id="estadoMemoria">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Registro e Auditoria</h2>
+<div class="info" id="estadoRegistro">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Saída Pública</h2>
+<div class="info" id="saidaPublica">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Saída Técnica</h2>
+<div class="info" id="saidaTecnicaResumo">Carregando...</div>
+</div>
+
+</div>
+
+<div class="botoes">
+<h2>Controles do Dashboard</h2>
+
+<button onclick="atualizarDashboard()">Atualizar dashboard</button>
+<button onclick="verResumoCompleto()">Ver resumo completo</button>
+<button onclick="verRelatorioCompleto()">Ver relatório completo</button>
+<button onclick="verMemoriaCompleta()">Ver memória completa</button>
+<button onclick="verRegistroCompleto()">Ver registro completo</button>
+<button onclick="exportarRegistro()">Exportar registro</button>
+<button onclick="limparRegistro()">Limpar registro</button>
+</div>
+
+<div id="saidaPainel" class="output">Aguardando leitura do dashboard...</div>
+
+<div class="back" onclick="location.href='revisao_tecnica.html'">← voltar ao programa principal</div>
+
+</div>
+
+<footer>
+Sistema Lapidar — Revisão Técnica<br>
+Dashboard técnico periférico sem violação da espinha dorsal
+</footer>
+
+<script>
+function atualizarDashboard(){
+
+const estadoCore = obterEstadoCore()
+const estadoMemoria = obterEstadoMemoria()
+const estadoRegistro = obterEstadoRegistro()
+const relatorio = obterRelatorio()
+
+document.getElementById("estadoNucleo").innerText =
+formatarEstadoNucleo(estadoCore)
+
+document.getElementById("estadoObra").innerText =
+formatarIdentificacaoObra(estadoCore)
+
+document.getElementById("estadoMemoria").innerText =
+formatarEstadoMemoria(estadoMemoria)
+
+document.getElementById("estadoRegistro").innerText =
+formatarEstadoRegistro(estadoRegistro)
+
+document.getElementById("saidaPublica").innerText =
+formatarSaidaPublica(relatorio)
+
+document.getElementById("saidaTecnicaResumo").innerText =
+formatarSaidaTecnica(relatorio)
+
+document.getElementById("saidaPainel").innerText =
+"Dashboard atualizado com sucesso."
+}
+
+function obterEstadoCore(){
+try{
+if(typeof RevisaoCore === "undefined"){
+return null
+}
+return RevisaoCore.status()
+}catch(e){
+return null
+}
+}
+
+function obterEstadoMemoria(){
+try{
+if(typeof RevisaoMemoria === "undefined"){
+return null
+}
+return JSON.parse(RevisaoMemoria.ver())
+}catch(e){
+return null
+}
+}
+
+function obterEstadoRegistro(){
+try{
+if(typeof RevisaoRegistro === "undefined"){
+return null
+}
+return RevisaoRegistro.status()
+}catch(e){
+return null
+}
+}
+
+function obterRelatorio(){
+try{
+if(typeof RevisaoRelatorio === "undefined"){
+return null
+}
+return RevisaoRelatorio.gerar()
+}catch(e){
+return null
+}
+}
+
+function formatarEstadoNucleo(estado){
+if(!estado){
+return "RevisaoCore indisponível."
+}
+
+let linhas = []
+linhas.push("Obra carregada: " + (estado.estado.obraCarregada ? "sim" : "não"))
+linhas.push("Análise executada: " + (estado.estado.analiseExecutada ? "sim" : "não"))
+linhas.push("Relatório gerado: " + (estado.estado.relatorioGerado ? "sim" : "não"))
+linhas.push("Status: " + (estado.memoria.status || "indefinido"))
+return linhas.join("\n")
+}
+
+function formatarIdentificacaoObra(estado){
+if(!estado){
+return "Identificação não disponível."
+}
+
+let linhas = []
+linhas.push("Título: " + (estado.memoria.titulo || "sem_titulo"))
+linhas.push("Autor: " + (estado.memoria.autor || "sem_autor"))
+linhas.push("Gênero: " + (estado.memoria.genero || "nao_identificado"))
+return linhas.join("\n")
+}
+
+function formatarEstadoMemoria(memoria){
+if(!memoria){
+return "Memória indisponível."
+}
+
+let linhas = []
+linhas.push("Título salvo: " + (memoria.titulo ? "sim" : "não"))
+linhas.push("Autor salvo: " + (memoria.autor ? "sim" : "não"))
+linhas.push("Gênero salvo: " + (memoria.genero ? "sim" : "não"))
+linhas.push("Texto-base salvo: " + (memoria.textoBase ? "sim" : "não"))
+linhas.push("Última atualização: " + (memoria.ultimaAtualizacao || "não registrada"))
+return linhas.join("\n")
+}
+
+function formatarEstadoRegistro(registro){
+if(!registro){
+return "Registro indisponível."
+}
+
+let linhas = []
+linhas.push("Quantidade de eventos: " + (registro.totalEventos || 0))
+linhas.push("Último evento: " + (registro.ultimoEvento || "não registrado"))
+return linhas.join("\n")
+}
+
+function formatarSaidaPublica(relatorio){
+if(!relatorio || typeof relatorio === "string"){
+return "Saída pública indisponível."
+}
+
+if(!relatorio.saidaPublica || typeof relatorio.saidaPublica === "string"){
+return "Saída pública indisponível."
+}
+
+let linhas = []
+linhas.push("Clareza sintática: " + (relatorio.saidaPublica.clarezaSintatica || "indefinida"))
+linhas.push("Fluidez editorial: " + (relatorio.saidaPublica.fluidezEditorial || "indefinida"))
+linhas.push("Densidade de parágrafos: " + (relatorio.saidaPublica.densidadeParagrafos || "indefinida"))
+return linhas.join("\n")
+}
+
+function formatarSaidaTecnica(relatorio){
+if(!relatorio || typeof relatorio === "string"){
+return "Saída técnica indisponível."
+}
+
+if(!relatorio.saidaTecnica || typeof relatorio.saidaTecnica === "string"){
+return "Saída técnica indisponível."
+}
+
+let linhas = []
+linhas.push("Densidade frasal: " + (relatorio.saidaTecnica.densidadeFrasal || "indefinida"))
+linhas.push("Repetição lexical: " + (relatorio.saidaTecnica.repeticaoLexical || "indefinida"))
+linhas.push("Diálogo/narração: " + (relatorio.saidaTecnica.equilibrioDialogoNarracao || "indefinido"))
+linhas.push("Consistência do narrador: " + (relatorio.saidaTecnica.consistenciaNarrador || "indefinida"))
+return linhas.join("\n")
+}
+
+function verResumoCompleto(){
+const resumo = {
+core: obterEstadoCore(),
+memoria: obterEstadoMemoria(),
+registro: obterEstadoRegistro(),
+relatorio: obterRelatorio()
+}
+document.getElementById("saidaPainel").innerText =
+JSON.stringify(resumo, null, 2)
+}
+
+function verRelatorioCompleto(){
+if(typeof RevisaoRelatorio === "undefined"){
+document.getElementById("saidaPainel").innerText = "RevisaoRelatorio indisponível."
+return
+}
+const relatorio = RevisaoRelatorio.exportarTextoCompleto()
+document.getElementById("saidaPainel").innerText = relatorio
+}
+
+function verMemoriaCompleta(){
+if(typeof RevisaoMemoria === "undefined"){
+document.getElementById("saidaPainel").innerText = "RevisaoMemoria indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+RevisaoMemoria.ver()
+}
+
+function verRegistroCompleto(){
+if(typeof RevisaoRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "RevisaoRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+JSON.stringify(RevisaoRegistro.listarEventos(), null, 2)
+}
+
+function exportarRegistro(){
+if(typeof RevisaoRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "RevisaoRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+RevisaoRegistro.exportar()
+}
+
+function limparRegistro(){
+if(typeof RevisaoRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "RevisaoRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+RevisaoRegistro.limparRegistro()
+atualizarDashboard()
+}
+
+window.onload = atualizarDashboard
+</script>
+
+</body>
+</html>
